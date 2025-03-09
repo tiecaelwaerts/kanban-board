@@ -5,20 +5,23 @@ interface JwtPayload {
   username: string;
 }
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction): Response | void => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) {
-    return res.status(401).json({ message: 'Access denied' });
-  }
+export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+ 
+  const authHeader = req.headers.authorization;
 
-  try {
-    if (!process.env.JWT_SECRET_KEY) {
-      throw new Error('JWT_SECRET_KEY is not defined');
-    }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY) as JwtPayload;
-    req.user = { username: decoded.username };
-    return next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Invalid token' });
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+    const secretKey = process.env.JWT_SECRET_KEY || '';
+
+    jwt.verify(token, secretKey, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+
+      req.user = user as JwtPayload;
+      return next();
+    })
+  } else {
+    res.sendStatus(401);
   }
 };
