@@ -14,3 +14,6 @@ This project is a simple KanBan board application that helps you manage tasks ef
 Use the following link [here!](https://kanban-board-hw.onrender.com)
 ## Usage
 Login and Start with your to do process.
+
+## Collaborators
+Huge thanks to my classmates for the assists, and the usage of copilot and chatgpt
